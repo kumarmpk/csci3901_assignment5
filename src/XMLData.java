@@ -10,9 +10,6 @@ import java.util.List;
 
 public class XMLData {
 
-    //to store the getter method prefix
-    private String GET_PREFIX = "get";
-
     /*
     prepareXML method
     gets the complete data and date range as inputs
@@ -30,55 +27,93 @@ public class XMLData {
             //xml data is streamed to output factory
             XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);
 
-            xmlStreamWriter.writeStartDocument();
+            xmlStreamWriter.writeStartDocument("UTF-8","1.0");
+            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
 
             //initial output from input
             xmlStreamWriter.writeStartElement("year_end_summary");
+            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+            xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
             xmlStreamWriter.writeStartElement("year");
+            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
 
+            xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
             xmlStreamWriter.writeStartElement("start_date");
             xmlStreamWriter.writeCharacters(startDate);
             xmlStreamWriter.writeEndElement();
 
+            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+            xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
             xmlStreamWriter.writeStartElement("end_date");
             xmlStreamWriter.writeCharacters(endDate);
             xmlStreamWriter.writeEndElement();
 
+            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+            xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
             xmlStreamWriter.writeEndElement();
 
             //customer section of XML
             if(customerList != null && !customerList.isEmpty()){
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("customer_list");
                 formXMLFromObject(xmlStreamWriter, customerList);
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeEndElement();
             } else {
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("customer_list");
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
                 xmlStreamWriter.writeStartElement("customer");
                 xmlStreamWriter.writeEndElement();
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeEndElement();
             }
 
             //product section of the XML
             if(productList != null && !productList.isEmpty()){
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("product_list");
                 formXMLFromObject(xmlStreamWriter, productList);
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeEndElement();
             } else {
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("product_list");
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
                 xmlStreamWriter.writeStartElement("category");
                 xmlStreamWriter.writeEndElement();
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeEndElement();
             }
 
             //supplier section of the XML
             if(supplierList != null && !supplierList.isEmpty()){
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("supplier_list");
                 formXMLFromObject(xmlStreamWriter, supplierList);
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeEndElement();
             } else {
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("supplier_list");
                 xmlStreamWriter.writeEndElement();
             }
+
+            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+            xmlStreamWriter.writeEndElement();
 
             xmlStreamWriter.flush();
             xmlStreamWriter.close();
@@ -105,11 +140,25 @@ public class XMLData {
         //looping the list
         for(Object obj : list){
 
-            //get the class of the object passed
-            Class cls = obj.getClass();
-
             //gets the array of all the method of the class
-            Method[] clsMethods = cls.getMethods();
+            String[] clsMethods = null;
+
+            if(obj instanceof Customer){
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
+                xmlStreamWriter.writeStartElement("customer");
+                clsMethods = ConstantsClass.custGetterMthds;
+            } else if(obj instanceof Category){
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
+                xmlStreamWriter.writeStartElement("category");
+                clsMethods = ConstantsClass.catGetterMthds;
+            } else if(obj instanceof Supplier){
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
+                xmlStreamWriter.writeStartElement("supplier");
+                clsMethods = ConstantsClass.suppGetterMthds;
+            }
 
             //number of methods of the class
             int clsMethodsCount = clsMethods.length;
@@ -120,12 +169,14 @@ public class XMLData {
             //looping all the methods
             for(int i = 0; i < clsMethodsCount; i++) {
 
-                String methodName = clsMethods[i].getName();
+                String methodName = clsMethods[i];
 
                 //looping only the getter methods except address
-                if (methodName.startsWith(GET_PREFIX) && !methodName.equals("getClass")
-                    && !methodName.equals("getAddress")) {
+                if (methodName.startsWith(ConstantsClass.GET_PREFIX) && !methodName.equals("getClass")
+                    && !methodName.equals("getAddress") && !methodName.equals("getProductList")) {
 
+                    xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                    xmlStreamWriter.writeCharacters(ConstantsClass.nineSpace);
                     //form the start tag
                     xmlStreamWriter.writeStartElement(getPropertyNameFromMethod(methodName));
 
@@ -140,11 +191,63 @@ public class XMLData {
                     }
                     xmlStreamWriter.writeEndElement();
                 }
+                else if (methodName.startsWith(ConstantsClass.GET_PREFIX) && methodName.equals("getProductList")){
 
-                else if (methodName.startsWith(GET_PREFIX) && methodName.equals("getAddress")){
+                    //getAddress details
+                    Method getProductList = getMethod(obj, methodName, clz);
 
-                    //address class
-                    Class addCls = Address.class;
+                    //address object
+                    List productList = (List) getProductList.invoke(obj, new Object[0]);
+
+                    for(Object prod : productList) {
+                        xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                        xmlStreamWriter.writeCharacters(ConstantsClass.nineSpace);
+                        xmlStreamWriter.writeStartElement("product");
+
+                        //array of address methods
+                        String[] prodClsMethods = ConstantsClass.prodGetterMthds;
+
+                        //number of methods in address class
+                        int prodClsMethodsCount = prodClsMethods.length;
+
+                        //class array
+                        Class[] prodClzArray = new Class[0];
+
+                        //looping all methods of address object
+                        for (int j = 0; j < prodClsMethodsCount; j++) {
+
+                            String prodMethodName = prodClsMethods[j];
+
+                            if (prodMethodName.startsWith(ConstantsClass.GET_PREFIX) && !prodMethodName.equals("getClass")) {
+
+                                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                                xmlStreamWriter.writeCharacters(ConstantsClass.twelveSpace);
+                                //start tag
+                                xmlStreamWriter.writeStartElement(getPropertyNameFromMethod(prodMethodName));
+
+                                //get the details of getter method
+                                Method m = getMethod(prod, prodMethodName, prodClzArray);
+
+                                //get the value
+                                String value = (String) m.invoke(prod, new Object[0]);
+                                if (value != null) {
+                                    //value is not null write to XML
+                                    xmlStreamWriter.writeCharacters(value);
+                                }
+                                xmlStreamWriter.writeEndElement();
+                            }
+                        }
+                        xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                        xmlStreamWriter.writeCharacters(ConstantsClass.nineSpace);
+                        xmlStreamWriter.writeEndElement();
+                    }
+                }
+
+                else if (methodName.startsWith(ConstantsClass.GET_PREFIX) && methodName.equals("getAddress")){
+
+                    xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                    xmlStreamWriter.writeCharacters(ConstantsClass.nineSpace);
+                    xmlStreamWriter.writeStartElement("address");
 
                     //getAddress details
                     Method getAddress = getMethod(obj, methodName, clz);
@@ -153,7 +256,7 @@ public class XMLData {
                     Address add = (Address) getAddress.invoke(obj, new Object[0]);
 
                     //array of address methods
-                    Method[] addClsMethods = addCls.getMethods();
+                    String[] addClsMethods = ConstantsClass.addGetterMthds;
 
                     //number of methods in address class
                     int addClsMethodsCount = addClsMethods.length;
@@ -164,10 +267,12 @@ public class XMLData {
                     //looping all methods of address object
                     for(int j = 0; j < addClsMethodsCount; j++) {
 
-                        String addMethodName = addClsMethods[i].getName();
+                        String addMethodName = addClsMethods[j];
 
-                        if(methodName.startsWith(GET_PREFIX) && !methodName.equals("getClass")) {
+                        if(addMethodName.startsWith(ConstantsClass.GET_PREFIX) && !addMethodName.equals("getClass")) {
 
+                            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                            xmlStreamWriter.writeCharacters(ConstantsClass.twelveSpace);
                             //start tag
                             xmlStreamWriter.writeStartElement(getPropertyNameFromMethod(addMethodName));
 
@@ -183,8 +288,14 @@ public class XMLData {
                             xmlStreamWriter.writeEndElement();
                         }
                     }
+                    xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                    xmlStreamWriter.writeCharacters(ConstantsClass.nineSpace);
+                    xmlStreamWriter.writeEndElement();
                 }
             }
+            xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+            xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
+            xmlStreamWriter.writeEndElement();
         }
         return xmlStreamWriter;
     }
@@ -208,87 +319,19 @@ public class XMLData {
     private static String getPropertyNameFromMethod(String methodName){
         String fieldName = "";
 
-        fieldName = fieldName.concat(String.valueOf(methodName.charAt(3)).toLowerCase()).concat(methodName.substring(4));
+        fieldName = fieldName.concat(String.valueOf(methodName.charAt(3)).toLowerCase());
+
+        char[] methodNameArray = methodName.toCharArray();
+        for(int i=4; i<methodNameArray.length; i++){
+            char currentChar = methodNameArray[i];
+            if(Character.isUpperCase(currentChar)){
+                fieldName = fieldName.concat("_").concat(String.valueOf(currentChar).toLowerCase());
+            } else {
+                fieldName = fieldName.concat(String.valueOf(currentChar));
+            }
+        }
 
         return fieldName;
     }
-
-    /*
-    private XMLStreamWriter formProductPart(XMLStreamWriter xmlStreamWriter, List<Product> productList) throws Exception{
-
-        for(Product prod : productList){
-
-            Class cls = prod.getClass();
-            Method[] methods = cls.getMethods();
-            int count = methods.length;
-            Class[] clz = new Class[0];
-
-            for(int i = 0; i < count; i++) {
-
-                String methodName = methods[i].getName();
-
-                if (methodName.startsWith(GET_PREFIX) && !methodName.equals("getClass")) {
-                    xmlStreamWriter.writeStartElement(getPropertyNameFromMethod(methodName));
-                    Method m = getMethod(prod, methodName, clz);
-                    String value = (String) m.invoke(prod, new Object[0]);
-                    if(value != null){
-                        xmlStreamWriter.writeCharacters(value);
-                    }
-                    xmlStreamWriter.writeEndElement();
-                }
-            }
-
-        }
-
-        return xmlStreamWriter;
-    }
-
-    private XMLStreamWriter formCustomerPart(XMLStreamWriter xmlStreamWriter, List<Customer> customerList) throws XMLStreamException{
-
-        for(Customer cust : customerList){
-            xmlStreamWriter.writeStartElement("customer");
-
-            xmlStreamWriter.writeStartElement("customer_name");
-            xmlStreamWriter.writeCharacters(cust.getCustomerName());
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeStartElement("address");
-
-            xmlStreamWriter.writeStartElement("street_address");
-            xmlStreamWriter.writeCharacters(cust.getAddress().getStreetAddress());
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeStartElement("city");
-            xmlStreamWriter.writeCharacters(cust.getAddress().getCity());
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeStartElement("region");
-            xmlStreamWriter.writeCharacters(cust.getAddress().getRegion());
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeStartElement("postal_code");
-            xmlStreamWriter.writeCharacters(cust.getAddress().getPostalCode());
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeStartElement("country");
-            xmlStreamWriter.writeCharacters(cust.getAddress().getCountry());
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeStartElement("num_orders");
-            xmlStreamWriter.writeCharacters(String.valueOf(cust.getNumOrders()));
-            xmlStreamWriter.writeEndElement();
-
-            xmlStreamWriter.writeStartElement("order_value");
-            xmlStreamWriter.writeCharacters(String.valueOf(cust.getOrderValue()));
-            xmlStreamWriter.writeEndElement();
-
-        }
-
-        return xmlStreamWriter;
-    }
-    */
-
 
 }

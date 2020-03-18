@@ -45,7 +45,7 @@ public class ControllerClass {
             }
 
             //validates whether output file name is valid string
-            if (stringValidator(outputFileName)) {
+            if (!stringValidator(outputFileName)) {
                 printString("output file name is invalid.");
                 isValid = false;
                 return isValid;
@@ -55,8 +55,12 @@ public class ControllerClass {
             Date startDate = dateConverter(start);
             Date endDate = dateConverter(end);
 
+        } catch (ParseException e){
+            isValid = false;
+            System.out.println("System faced exception while parsing the input date.");
         } catch (Exception e){
             isValid = false;
+            System.out.println("System faced unexpected exception while validating the inputs.");
         }
         return isValid;
     }
@@ -86,7 +90,7 @@ public class ControllerClass {
         String xmlContent = null;
 
         List customerList = (List) dataMap.get(ConstantsClass.CUSTOMER);
-        List productList = (List) dataMap.get(ConstantsClass.PRODUCT);
+        List productList = (List) dataMap.get(ConstantsClass.CATEGORY);
         List supplierList = (List) dataMap.get(ConstantsClass.SUPPLIER);
 
         XMLData xmlData = new XMLData();

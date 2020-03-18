@@ -1,5 +1,3 @@
-import java.math.BigDecimal;
-
 //stores the customer details
 
 public class Customer {
@@ -11,10 +9,10 @@ public class Customer {
     private Address address;
 
     //number of orders done by the customer
-    private int numOrders;
+    private String numOrders;
 
     //total value of the orders of the customer
-    private BigDecimal orderValue;
+    private String orderValue;
 
     /*
     getAddress method
@@ -54,7 +52,7 @@ public class Customer {
     getNumOrders method
     returns the number of order of this object
      */
-    public int getNumOrders() {
+    public String getNumOrders() {
         return this.numOrders;
     }
 
@@ -63,7 +61,7 @@ public class Customer {
     gets the number of orders as input
     sets the input into number of orders of this object
      */
-    public void setNumOrders(int numOrders) {
+    public void setNumOrders(String numOrders) {
         this.numOrders = numOrders;
     }
 
@@ -71,7 +69,7 @@ public class Customer {
     getOrderValue method
     returns the total value of the orders of this object
      */
-    public BigDecimal getOrderValue() {
+    public String getOrderValue() {
         return this.orderValue;
     }
 
@@ -80,7 +78,7 @@ public class Customer {
     gets the total order of the customer as input
     sets the input into the total order of this object
      */
-    public void setOrderValue(BigDecimal orderValue) {
+    public void setOrderValue(String orderValue) {
         this.orderValue = orderValue;
     }
 

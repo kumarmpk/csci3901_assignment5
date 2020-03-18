@@ -2,9 +2,6 @@
 
 public class Product {
 
-    //stores the category name of the product
-    private String categoryName;
-
     //stores the product name
     private String productName;
 
@@ -16,23 +13,6 @@ public class Product {
 
     //stores the total cost of the products
     private String saleValue;
-
-    /*
-    getCategoryName method
-    returns the category name of this object
-     */
-    public String getCategoryName() {
-        return this.categoryName;
-    }
-
-    /*
-    setCategoryName method
-    gets the category name as input
-    sets the input into category name of this object
-     */
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
 
     /*
     getProductName method

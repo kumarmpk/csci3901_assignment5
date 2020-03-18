@@ -9,11 +9,6 @@ import java.util.*;
 
 public class DBHandler {
 
-    private String CUSTOMER = "customer";
-    private String PRODUCT = "product";
-    private String SUPPLIER = "supplier";
-    private String SET_PREFIX = "set";
-
     /*
     getConnect method
     creates a database connection
@@ -58,24 +53,27 @@ public class DBHandler {
             // Statements send queries to the database.
             statement = connect.createStatement();
 
+            //set the database name
+            statement.executeQuery("use " + dbName + ";");
+
             Queries query = new Queries();
 
             //fetches all customer information between the date ranges
             resultSet = statement.executeQuery(query.buildCustomerQuery(start, end));
-            List customerList = convertDataIntoObj(resultSet, CUSTOMER);
+            List customerList = convertDataIntoObj(resultSet, ConstantsClass.CUSTOMER);
 
             //fetches all product information between the date ranges
-            resultSet = statement.executeQuery(query.buildQuery2(start, end));
-            List productList = convertDataIntoObj(resultSet, PRODUCT);
+            resultSet = statement.executeQuery(query.buildProductQuery(start, end));
+            List categoryList = convertDataIntoObj(resultSet, ConstantsClass.CATEGORY);
 
             //fetches all supplier information between the date ranges
             resultSet = statement.executeQuery(query.buildSupplierQuery(start, end));
-            List supplierList = convertDataIntoObj(resultSet, SUPPLIER);
+            List supplierList = convertDataIntoObj(resultSet, ConstantsClass.SUPPLIER);
 
             //creates map with string as key and list as value
-            returnMap.put(CUSTOMER, customerList);
-            returnMap.put(PRODUCT, productList);
-            returnMap.put(SUPPLIER, supplierList);
+            returnMap.put(ConstantsClass.CUSTOMER, customerList);
+            returnMap.put(ConstantsClass.CATEGORY, categoryList);
+            returnMap.put(ConstantsClass.SUPPLIER, supplierList);
 
         } catch (Exception e){
             //catches all exception and throws them back
@@ -110,13 +108,17 @@ public class DBHandler {
 
         List returnList = new ArrayList();
         Class cls = null;
+        String categoryName = null;
+        String previousCategoryName = null;
+
+        List productList = null;
 
         //based on object name class is defined
-        if(objectName.equals(CUSTOMER)){
+        if(objectName.equals(ConstantsClass.CUSTOMER)){
             cls = Customer.class;
-        } else if(objectName.equals(PRODUCT)){
-            cls = Product.class;
-        } else if(objectName.equals(SUPPLIER)){
+        } else if(objectName.equals(ConstantsClass.CATEGORY)){
+            cls = Category.class;
+        } else if(objectName.equals(ConstantsClass.SUPPLIER)){
             cls = Supplier.class;
         }
 
@@ -125,38 +127,67 @@ public class DBHandler {
         //number of methods
         int clsMethodsCount = clsMethods.length;
 
+        Object obj = null;
+
         try{
             //looping till the result set has value
             while(resultSet.next()){
 
+                //based on the object name object is defined
+                if (objectName.equals(ConstantsClass.CUSTOMER)) {
+                    obj = new Customer();
+                } else if (objectName.equals(ConstantsClass.CATEGORY)) {
+                    categoryName = resultSet.getString("categoryName");
+                    if(!categoryName.equals(previousCategoryName)) {
+                        if(productList != null && !productList.isEmpty()) {
+                            Method method = getSetterMethodForField(obj,
+                                    "setProductList", productList.getClass());
+                            method.invoke(obj, productList);
+                            returnList.add(obj);
+                        }
+                        //obj = new Category();
+                        obj = cls.newInstance();
+                        productList = new ArrayList();
+                    }
+                } else if (objectName.equals(ConstantsClass.SUPPLIER)) {
+                    obj = new Supplier();
+                }
+
+                String methodName = null;
+                if(categoryName != null && categoryName.equals(previousCategoryName)) {
+                    methodName = "setProductList";
+                }
+
                 //looping for all methods
                 for(int i=0; i<clsMethodsCount; i++ ) {
 
-                    //method name
-                    String methodName = clsMethods[i].getName();
-                    //field name of the method
-                    String fieldName = getFieldNameFromMethod(methodName);
+                    if(methodName == null || !methodName.equals("setProductList")) {
+                        //method name
+                        methodName = clsMethods[i].getName();
+                    }
 
                     //to set a value looping only the setter methods
-                    if(methodName.startsWith(SET_PREFIX)) {
-                        Object obj = null;
-                        //based on the object name object is defined
-                        if (objectName.equals(CUSTOMER)) {
-                             obj = new Customer();
-                        } else if (objectName.equals(PRODUCT)) {
-                            obj = new Product();
-                        } else if (objectName.equals(SUPPLIER)) {
-                            obj = new Supplier();
-                        }
+                    if(methodName.startsWith(ConstantsClass.SET_PREFIX)) {
 
                         //setAddress method has to be handled separately since it is itself an object
-                        if(!methodName.equals("setAddress")) {
-                            //getting the method details
-                            Method method = getSetterMethodForField(obj,
-                                    methodName, resultSet.getString(fieldName).getClass());
-                            //setting the value into the object
-                            method.invoke(obj, resultSet.getString(fieldName));
-                        } else {
+                        if(!methodName.equals("setAddress") && !methodName.equals("setProductList")) {
+                            //field name of the method
+                            String fieldName = getFieldNameFromMethod(methodName);
+
+                            String dbValue = resultSet.getString(fieldName);
+
+                            if(fieldName.equals("categoryName")){
+                                previousCategoryName = dbValue;
+                            }
+
+                            if(dbValue != null && !dbValue.isEmpty()) {
+                                //getting the method details
+                                Method method = getSetterMethodForField(obj,
+                                        methodName, dbValue.getClass());
+                                //setting the value into the object
+                                method.invoke(obj, dbValue);
+                            }
+                        } else if(methodName.equals("setAddress")){
                             //address object details in the similar way
                             Address add = new Address();
                             Class addCls = Address.class;
@@ -166,26 +197,63 @@ public class DBHandler {
                             //looping all address methods
                             for(int j=0; j<addClsMethodsCount; j++) {
 
-                                String addMethodName = addClsMethods[i].getName();
-                                String addFieldName = getFieldNameFromMethod(addMethodName);
+                                String addMethodName = addClsMethods[j].getName();
 
                                 //looping only setter methods
-                                if (methodName.startsWith(SET_PREFIX)) {
-                                    //getting the method details
-                                    Method method = getSetterMethodForField(add,
-                                            addMethodName, resultSet.getString(addFieldName).getClass());
-                                    //setting the value into the object
-                                    method.invoke(add, resultSet.getString(addFieldName));
+                                if (addMethodName.startsWith(ConstantsClass.SET_PREFIX)) {
+                                    //field name of the method
+                                    String addFieldName = getFieldNameFromMethod(addMethodName);
+
+                                    String dbValue = resultSet.getString(addFieldName);
+
+                                    if(dbValue != null && !dbValue.isEmpty()) {
+                                        //getting the method details
+                                        Method method = getSetterMethodForField(add,
+                                                addMethodName, dbValue.getClass());
+                                        //setting the value into the object
+                                        method.invoke(add, dbValue);
+                                    }
                                 }
                             }
                             //setting the address object into the main object
                             Method method = getSetterMethodForField(obj,
-                                    methodName, resultSet.getString(fieldName).getClass());
+                                    methodName, addCls);
                             method.invoke(obj, add);
+                        } else if(methodName.equals("setProductList")){
+                            Product prod = new Product();
+                            Class prodCls = Product.class;
+                            Method[] prodClsMethods = prodCls.getMethods();
+                            int prodClsMethodsCount = prodClsMethods.length;
+
+                            //looping all address methods
+                            for(int j=0; j<prodClsMethodsCount; j++) {
+
+                                String prodMethodName = prodClsMethods[j].getName();
+
+                                //looping only setter methods
+                                if (prodMethodName.startsWith(ConstantsClass.SET_PREFIX)) {
+                                    //field name of the method
+                                    String prodFieldName = getFieldNameFromMethod(prodMethodName);
+
+                                    String dbValue = resultSet.getString(prodFieldName);
+
+                                    if(dbValue != null && !dbValue.isEmpty()) {
+                                        //getting the method details
+                                        Method method = getSetterMethodForField(prod,
+                                                prodMethodName, dbValue.getClass());
+                                        //setting the value into the object
+                                        method.invoke(prod, dbValue);
+                                    }
+                                }
+                            }
+                            productList.add(prod);
+                            methodName = null;
                         }
-                        //adding the object into the return object
-                        returnList.add(obj);
                     }
+                }
+                //adding the object into the return object
+                if(!objectName.equals(ConstantsClass.CATEGORY)) {
+                    returnList.add(obj);
                 }
             }
 
@@ -217,103 +285,5 @@ public class DBHandler {
 
         return fieldName;
     }
-
-    /*
-    getCustomerList method
-    gets the result set as input
-    creates the customer list from the data
-     */
-    /*
-    private List getCustomerList(ResultSet resultSet){
-
-        List<Customer> customerList = new ArrayList<>();
-
-        try{
-            while(resultSet.next()){
-                Customer cust = new Customer();
-                cust.setCustomerName(resultSet.getString("companyname"));
-
-                Address add = new Address();
-                add.setStreetAddress(resultSet.getString("address"));
-                add.setCity(resultSet.getString("city"));
-                add.setCity(resultSet.getString("city"));
-                add.setRegion(resultSet.getString("region"));
-                add.setPostalCode(resultSet.getString("postalcode"));
-                add.setCountry(resultSet.getString("country"));
-                cust.setAddress(add);
-
-                cust.setNumOrders(resultSet.getInt("numorders"));
-                cust.setOrderValue(resultSet.getBigDecimal("value"));
-
-                customerList.add(cust);
-            }
-
-
-        } catch (Exception e){
-            System.out.println("System faced unexpected exception while fetching customer information.");
-        }
-        return customerList;
-    }
-
-    private List getProductList(ResultSet resultSet){
-
-        List<Product> productList = new ArrayList<>();
-
-        try{
-
-            while(resultSet.next()){
-                Product prod = new Product();
-                prod.setCategoryId(resultSet.getString("CategoryID"));
-                prod.setCategoryName(resultSet.getString("CategoryName"));
-                prod.setProductId(resultSet.getString("ProductID"));
-                prod.setProductName(resultSet.getString("ProductName"));
-                prod.setSupplierId(resultSet.getString("SupplierID"));
-                prod.setSupplierName(resultSet.getString("companyname"));
-                prod.setUnitSold(resultSet.getString("unitsold"));
-                prod.setSaleValue(resultSet.getString("value"));
-
-                productList.add(prod);
-            }
-
-
-        } catch (Exception e){
-            System.out.println("System faced unexpected exception while fetching product information.");
-        }
-        return productList;
-    }
-
-
-    private List getSupplierList(ResultSet resultSet){
-
-        List<Supplier> supplierList = new ArrayList<>();
-
-        try{
-            while(resultSet.next()){
-                Supplier supp = new Supplier();
-                supp.setSupplierId(resultSet.getInt("supplierid"));
-                supp.setSupplierName(resultSet.getString("companyname"));
-
-                Address add = new Address();
-                add.setStreetAddress(resultSet.getString("address"));
-                add.setCity(resultSet.getString("city"));
-                add.setRegion(resultSet.getString("region"));
-                add.setPostalCode(resultSet.getString("postalcode"));
-                add.setCountry(resultSet.getString("country"));
-                supp.setAddress(add);
-
-                supp.setNumProducts(resultSet.getInt("numOrders"));
-                supp.setProductValue(resultSet.getBigDecimal("value"));
-
-                supplierList.add(supp);
-            }
-
-
-        } catch (Exception e){
-            System.out.println("System faced unexpected exception while fetching product information.");
-        }
-        return supplierList;
-    }
-    */
-
 
 }

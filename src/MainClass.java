@@ -12,13 +12,16 @@ public class MainClass {
         //gets all the input details
         Scanner scan = new Scanner(System.in);
         System.out.println("enter the starting date for the period to summarize:");
-        String start = scan.next();
+        //String start = scan.next();
+        String start = "1997-02-01";
 
         System.out.println("enter the ending date for the period to summarize:");
-        String end = scan.next();
+        //String end = scan.next();
+        String end = "1997-02-03";
 
-        System.out.println("enter the output file name.");
-        String outputFileName = scan.next();
+        //System.out.println("enter the output file name.");
+        //String outputFileName = scan.next();
+        String outputFileName = "abc.xml";
 
         //Controller class controls the flow of the program
         ControllerClass controller = new ControllerClass();
@@ -47,6 +50,8 @@ public class MainClass {
                         }
                     }
                 }
+            } else{
+                System.out.println("Input is invalid.");
             }
 
         }
