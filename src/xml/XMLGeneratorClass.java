@@ -1,21 +1,30 @@
+package xml;
+
+import constants.ConstantsClass;
+import plainobjects.Address;
+import plainobjects.Customer;
+import plainobjects.Category;
+import plainobjects.Supplier;
+
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Method;
-import java.util.Date;
 import java.util.List;
 
 //Class to generate the XML content
 
-public class XMLData {
+public class XMLGeneratorClass implements XMLGenerator{
 
     /*
     prepareXML method
     gets the complete data and date range as inputs
     using stax parser convert the data into XML
      */
-    public String prepareXML(List customerList, List productList, List supplierList, String startDate, String endDate){
+    public String prepareXML(List customerList, List categoryList, List supplierList,
+                             String startDate, String endDate) throws Exception{
+
         String xmlString = null;
         try {
             //string write is used to create the string
@@ -75,11 +84,11 @@ public class XMLData {
             }
 
             //product section of the XML
-            if(productList != null && !productList.isEmpty()){
+            if(categoryList != null && !categoryList.isEmpty()){
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("product_list");
-                formXMLFromObject(xmlStreamWriter, productList);
+                formXMLFromObject(xmlStreamWriter, categoryList);
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeEndElement();
@@ -124,8 +133,10 @@ public class XMLData {
 
         } catch (XMLStreamException e){
             System.out.println("System faced XMLStreamException exception while creating XML file.");
+            throw e;
         } catch (Exception e){
             System.out.println("System faced unexpected exception while creating XML file.");
+            throw e;
         }
         return xmlString;
     }

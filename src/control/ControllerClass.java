@@ -1,7 +1,13 @@
+package control;
+
+import constants.ConstantsClass;
+import db.DBHandler;
+import db.DBHandlerClass;
+import xml.XMLGenerator;
+import xml.XMLGeneratorClass;
+
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -11,14 +17,14 @@ import java.util.Map;
 //Controller class controls the flow of control and acts as the layer between
 //user input class, database layer and xml forming class
 
-public class ControllerClass {
+public class ControllerClass implements Controller{
 
     /*
     printString method
     gets string as input
     prints the input to user
      */
-    private void printString(String input){
+    public void printString(String input){
         System.out.println(input);
     }
 
@@ -57,10 +63,10 @@ public class ControllerClass {
 
         } catch (ParseException e){
             isValid = false;
-            System.out.println("System faced exception while parsing the input date.");
+            printString("System faced exception while parsing the input date.");
         } catch (Exception e){
             isValid = false;
-            System.out.println("System faced unexpected exception while validating the inputs.");
+            printString("System faced unexpected exception while validating the inputs.");
         }
         return isValid;
     }
@@ -72,7 +78,7 @@ public class ControllerClass {
      */
     public Map getData(String start, String end) throws Exception{
 
-        DBHandler dbHandler = new DBHandler();
+        DBHandler dbHandler = new DBHandlerClass();
 
         //fetching the data from database
         Map dataMap = dbHandler.getData(start, end);
@@ -86,14 +92,14 @@ public class ControllerClass {
     gets the data map and date range as inputs
     form the XML as String
      */
-    public String formXMLString(Map dataMap, String start, String end){
+    public String formXMLString(Map dataMap, String start, String end) throws Exception{
         String xmlContent = null;
 
         List customerList = (List) dataMap.get(ConstantsClass.CUSTOMER);
         List productList = (List) dataMap.get(ConstantsClass.CATEGORY);
         List supplierList = (List) dataMap.get(ConstantsClass.SUPPLIER);
 
-        XMLData xmlData = new XMLData();
+        XMLGenerator xmlData = new XMLGeneratorClass();
         //passing the list and date range to prepare the file content
         xmlContent = xmlData.prepareXML(customerList, productList, supplierList, start, end);
 
@@ -129,10 +135,10 @@ public class ControllerClass {
             returnDate = format.parse(dateString);
         } catch (ParseException e) {
             //if the input is invalid format then exception is thrown
-            System.out.println("Inputted date is not in the expected format.");
+            printString("Inputted date is not in the expected format.");
             throw e;
         } catch (Exception e) {
-            System.out.println("System faced unexpected exception in main method.");
+            printString("System faced unexpected exception in main method.");
             throw e;
         }
         return returnDate;
@@ -157,6 +163,7 @@ public class ControllerClass {
 
             //writes the content
             fileOutputStream.write(content.getBytes(), 0, content.length());
+
         } catch (Exception e) {
             //catches all exception
             isSuccess = false;

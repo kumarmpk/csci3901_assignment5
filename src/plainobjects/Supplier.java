@@ -1,4 +1,7 @@
+package plainobjects;
 //stores the supplier information
+
+import plainobjects.Address;
 
 public class Supplier {
 

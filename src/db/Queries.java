@@ -1,3 +1,5 @@
+package db;
+
 //class to build the queries
 
 public class Queries {

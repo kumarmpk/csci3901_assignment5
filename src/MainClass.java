@@ -1,3 +1,6 @@
+import control.Controller;
+import control.ControllerClass;
+
 import java.util.Map;
 import java.util.Scanner;
 
@@ -11,20 +14,20 @@ public class MainClass {
 
         //gets all the input details
         Scanner scan = new Scanner(System.in);
-        System.out.println("enter the starting date for the period to summarize:");
-        //String start = scan.next();
-        String start = "1997-02-01";
+        System.out.println("Enter the starting date for the period to summarize:");
+        String start = scan.next();
+        //String start = "1997-02-01";
 
-        System.out.println("enter the ending date for the period to summarize:");
-        //String end = scan.next();
-        String end = "1997-02-03";
+        System.out.println("Enter the ending date for the period to summarize:");
+        String end = scan.next();
+        //String end = "1997-02-03";
 
         //System.out.println("enter the output file name.");
-        //String outputFileName = scan.next();
-        String outputFileName = "abc.xml";
+        String outputFileName = scan.next();
+        //String outputFileName = "abc.xml";
 
         //Controller class controls the flow of the program
-        ControllerClass controller = new ControllerClass();
+        Controller controller = new ControllerClass();
 
         try{
             //check whether the inputs are valid

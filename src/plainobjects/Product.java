@@ -1,3 +1,4 @@
+package plainobjects;
 //object to store all product information
 
 public class Product {

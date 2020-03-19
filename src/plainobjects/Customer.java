@@ -1,4 +1,7 @@
+package plainobjects;
 //stores the customer details
+
+import plainobjects.Address;
 
 public class Customer {
 

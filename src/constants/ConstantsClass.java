@@ -1,3 +1,5 @@
+package constants;
+
 public class ConstantsClass {
 
     public static final String CUSTOMER = "customer";

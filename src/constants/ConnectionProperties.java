@@ -1,3 +1,5 @@
+package constants;
+
 import java.util.Properties;
 
 //class used to store the database connection details

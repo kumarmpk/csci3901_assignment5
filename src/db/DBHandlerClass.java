@@ -1,3 +1,13 @@
+package db;
+
+import constants.ConnectionProperties;
+import constants.ConstantsClass;
+import plainobjects.Category;
+import plainobjects.Address;
+import plainobjects.Product;
+import plainobjects.Supplier;
+import plainobjects.Customer;
+
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -7,7 +17,17 @@ import java.util.*;
 
 //handles the database section of the program
 
-public class DBHandler {
+public class DBHandlerClass implements DBHandler {
+
+    /*
+    printString method
+    gets string as input
+    prints the input to user
+     */
+    public void printString(String input){
+        System.out.println(input);
+    }
+
 
     /*
     getConnect method
@@ -92,7 +112,7 @@ public class DBHandler {
                     resultSet.close();
                 }
             } catch (Exception e){
-                System.out.println("System faced unexpected exception in data fetching.");
+                printString("System faced unexpected exception in data fetching.");
                 throw e;
             }
         }
@@ -257,9 +277,8 @@ public class DBHandler {
                 }
             }
 
-
         } catch (Exception e){
-            System.out.println("System faced unexpected exception while fetching customer information.");
+            printString("System faced unexpected exception while fetching customer information.");
         }
         return returnList;
     }

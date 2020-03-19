@@ -1,6 +1,5 @@
+package plainobjects;
 //Object to store the address of Customer and Supplier
-
-import java.lang.reflect.Method;
 
 public class Address {
 
