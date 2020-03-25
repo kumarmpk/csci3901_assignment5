@@ -32,6 +32,7 @@ public class XMLGeneratorClass implements XMLGenerator{
 
             //xml output factory to write the content in XML form
             XMLOutputFactory xmlOutputFactory = XMLOutputFactory.newInstance();
+            xmlOutputFactory.setProperty("escapeCharacters", false);
 
             //xml data is streamed to output factory
             XMLStreamWriter xmlStreamWriter = xmlOutputFactory.createXMLStreamWriter(stringWriter);
@@ -118,6 +119,12 @@ public class XMLGeneratorClass implements XMLGenerator{
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeStartElement("supplier_list");
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
+                xmlStreamWriter.writeStartElement("supplier");
+                xmlStreamWriter.writeEndElement();
+                xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
+                xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
                 xmlStreamWriter.writeEndElement();
             }
 
@@ -128,6 +135,8 @@ public class XMLGeneratorClass implements XMLGenerator{
             xmlStreamWriter.close();
 
             xmlString = stringWriter.getBuffer().toString();
+
+
 
             stringWriter.close();
 

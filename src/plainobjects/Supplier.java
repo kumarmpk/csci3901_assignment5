@@ -84,4 +84,5 @@ public class Supplier {
     public void setProductValue(String productValue) {
         this.productValue = productValue;
     }
+
 }

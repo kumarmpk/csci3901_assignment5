@@ -82,4 +82,5 @@ public class Product {
     public void setSaleValue(String saleValue) {
         this.saleValue = saleValue;
     }
+
 }

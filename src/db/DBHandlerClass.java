@@ -77,18 +77,36 @@ public class DBHandlerClass implements DBHandler {
             statement.executeQuery("use " + dbName + ";");
 
             Queries query = new Queries();
+            List customerList = null;
+            List categoryList = null;
+            List supplierList = null;
 
-            //fetches all customer information between the date ranges
-            resultSet = statement.executeQuery(query.buildCustomerQuery(start, end));
-            List customerList = convertDataIntoObj(resultSet, ConstantsClass.CUSTOMER);
+            try {
+                //fetches all customer information between the date ranges
+                resultSet = statement.executeQuery(query.buildCustomerQuery(start, end));
+                customerList = convertDataIntoObj(resultSet, ConstantsClass.CUSTOMER);
+            } catch (Exception e){
+                printString("System faced unexpected exception while retrieving customer information.\n" +
+                        "Skipping customer information proceeding with other data.");
+            }
 
-            //fetches all product information between the date ranges
-            resultSet = statement.executeQuery(query.buildProductQuery(start, end));
-            List categoryList = convertDataIntoObj(resultSet, ConstantsClass.CATEGORY);
+            try {
+                //fetches all product information between the date ranges
+                resultSet = statement.executeQuery(query.buildProductQuery(start, end));
+                categoryList = convertDataIntoObj(resultSet, ConstantsClass.CATEGORY);
+            } catch (Exception e){
+                printString("System faced unexpected exception while retrieving product information.\n" +
+                        "Skipping product information proceeding with other data.");
+            }
 
-            //fetches all supplier information between the date ranges
-            resultSet = statement.executeQuery(query.buildSupplierQuery(start, end));
-            List supplierList = convertDataIntoObj(resultSet, ConstantsClass.SUPPLIER);
+            try {
+                //fetches all supplier information between the date ranges
+                resultSet = statement.executeQuery(query.buildSupplierQuery(start, end));
+                supplierList = convertDataIntoObj(resultSet, ConstantsClass.SUPPLIER);
+            } catch (Exception e){
+                printString("System faced unexpected exception while retrieving supplier information.\n" +
+                        "Skipping supplier information proceeding with other data.");
+            }
 
             //creates map with string as key and list as value
             returnMap.put(ConstantsClass.CUSTOMER, customerList);
@@ -98,6 +116,7 @@ public class DBHandlerClass implements DBHandler {
         } catch (Exception e){
             //catches all exception and throws them back
             System.out.println("System faced exception while connecting to DB.");
+            //e.printStackTrace();
             throw e;
         } finally {
             try{
@@ -273,6 +292,15 @@ public class DBHandlerClass implements DBHandler {
                 }
                 //adding the object into the return object
                 if(!objectName.equals(ConstantsClass.CATEGORY)) {
+                    returnList.add(obj);
+                }
+            }
+
+            if(objectName.equals(ConstantsClass.CATEGORY)) {
+                if(productList != null && !productList.isEmpty()) {
+                    Method method = getSetterMethodForField(obj,
+                            "setProductList", productList.getClass());
+                    method.invoke(obj, productList);
                     returnList.add(obj);
                 }
             }

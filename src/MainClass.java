@@ -15,23 +15,23 @@ public class MainClass {
         //gets all the input details
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter the starting date for the period to summarize:");
-        String start = scan.next();
-        //String start = "1997-02-01";
+        //String start = scan.next();
+        String start = "1996-07-04";
 
         System.out.println("Enter the ending date for the period to summarize:");
-        String end = scan.next();
-        //String end = "1997-02-03";
+        //String end = scan.next();
+        String end = "1996-07-06";
 
-        //System.out.println("enter the output file name.");
-        String outputFileName = scan.next();
-        //String outputFileName = "abc.xml";
+        System.out.println("enter the output file name.");
+       // String outputFileName = scan.next();
+       String outputFileName = "out.xml";
 
         //Controller class controls the flow of the program
         Controller controller = new ControllerClass();
 
         try{
             //check whether the inputs are valid
-            boolean isValid = controller.validate(start, end, outputFileName);
+            boolean isValid = controller.validateInput(start, end, outputFileName);
 
             if(isValid){
                 //get data from database
@@ -48,6 +48,10 @@ public class MainClass {
                         boolean isSuccess = controller.writeToOutputFile(outputFileName, xmlContent);
                         if(isSuccess){
                             System.out.println("Output file created successfully.");
+                            boolean isValidXML = controller.validateXML(outputFileName);
+                            if(isValidXML){
+                                System.out.println("Output file is a valid xml.");
+                            }
                         } else {
                             System.out.println("Output file creation faced some issue.");
                         }
