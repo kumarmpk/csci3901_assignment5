@@ -18,6 +18,15 @@ import java.util.List;
 public class XMLGeneratorClass implements XMLGenerator{
 
     /*
+    printString method
+    gets string as input
+    prints the input to user
+    */
+    public void printString(String input){
+        System.out.println(input);
+    }
+
+    /*
     prepareXML method
     gets the complete data and date range as inputs
     using stax parser convert the data into XML
@@ -41,20 +50,20 @@ public class XMLGeneratorClass implements XMLGenerator{
             xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
 
             //initial output from input
-            xmlStreamWriter.writeStartElement("year_end_summary");
+            xmlStreamWriter.writeStartElement(ConstantsClass.yearEndSummary);
             xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
             xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
-            xmlStreamWriter.writeStartElement("year");
+            xmlStreamWriter.writeStartElement(ConstantsClass.year);
             xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
 
             xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-            xmlStreamWriter.writeStartElement("start_date");
+            xmlStreamWriter.writeStartElement(ConstantsClass.startDate);
             xmlStreamWriter.writeCharacters(startDate);
             xmlStreamWriter.writeEndElement();
 
             xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
             xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-            xmlStreamWriter.writeStartElement("end_date");
+            xmlStreamWriter.writeStartElement(ConstantsClass.endDate);
             xmlStreamWriter.writeCharacters(endDate);
             xmlStreamWriter.writeEndElement();
 
@@ -66,7 +75,7 @@ public class XMLGeneratorClass implements XMLGenerator{
             if(customerList != null && !customerList.isEmpty()){
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
-                xmlStreamWriter.writeStartElement("customer_list");
+                xmlStreamWriter.writeStartElement(ConstantsClass.custoemrList);
                 formXMLFromObject(xmlStreamWriter, customerList);
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
@@ -74,10 +83,10 @@ public class XMLGeneratorClass implements XMLGenerator{
             } else {
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
-                xmlStreamWriter.writeStartElement("customer_list");
+                xmlStreamWriter.writeStartElement(ConstantsClass.custoemrList);
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-                xmlStreamWriter.writeStartElement("customer");
+                xmlStreamWriter.writeStartElement(ConstantsClass.CUSTOMER);
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
@@ -88,7 +97,7 @@ public class XMLGeneratorClass implements XMLGenerator{
             if(categoryList != null && !categoryList.isEmpty()){
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
-                xmlStreamWriter.writeStartElement("product_list");
+                xmlStreamWriter.writeStartElement(ConstantsClass.productList);
                 formXMLFromObject(xmlStreamWriter, categoryList);
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
@@ -96,10 +105,10 @@ public class XMLGeneratorClass implements XMLGenerator{
             } else {
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
-                xmlStreamWriter.writeStartElement("product_list");
+                xmlStreamWriter.writeStartElement(ConstantsClass.productList);
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-                xmlStreamWriter.writeStartElement("category");
+                xmlStreamWriter.writeStartElement(ConstantsClass.CATEGORY);
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
@@ -110,7 +119,7 @@ public class XMLGeneratorClass implements XMLGenerator{
             if(supplierList != null && !supplierList.isEmpty()){
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
-                xmlStreamWriter.writeStartElement("supplier_list");
+                xmlStreamWriter.writeStartElement(ConstantsClass.supplierList);
                 formXMLFromObject(xmlStreamWriter, supplierList);
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
@@ -118,10 +127,10 @@ public class XMLGeneratorClass implements XMLGenerator{
             } else {
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
-                xmlStreamWriter.writeStartElement("supplier_list");
+                xmlStreamWriter.writeStartElement(ConstantsClass.supplierList);
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-                xmlStreamWriter.writeStartElement("supplier");
+                xmlStreamWriter.writeStartElement(ConstantsClass.SUPPLIER);
                 xmlStreamWriter.writeEndElement();
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.threeSpace);
@@ -141,10 +150,10 @@ public class XMLGeneratorClass implements XMLGenerator{
             stringWriter.close();
 
         } catch (XMLStreamException e){
-            System.out.println("System faced XMLStreamException exception while creating XML file.");
+            printString("System faced XMLStreamException exception while creating XML file.");
             throw e;
         } catch (Exception e){
-            System.out.println("System faced unexpected exception while creating XML file.");
+            printString("System faced unexpected exception while creating XML file.");
             throw e;
         }
         return xmlString;
@@ -166,17 +175,17 @@ public class XMLGeneratorClass implements XMLGenerator{
             if(obj instanceof Customer){
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-                xmlStreamWriter.writeStartElement("customer");
+                xmlStreamWriter.writeStartElement(ConstantsClass.CUSTOMER);
                 clsMethods = ConstantsClass.custGetterMthds;
             } else if(obj instanceof Category){
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-                xmlStreamWriter.writeStartElement("category");
+                xmlStreamWriter.writeStartElement(ConstantsClass.CATEGORY);
                 clsMethods = ConstantsClass.catGetterMthds;
             } else if(obj instanceof Supplier){
                 xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                 xmlStreamWriter.writeCharacters(ConstantsClass.sixSpace);
-                xmlStreamWriter.writeStartElement("supplier");
+                xmlStreamWriter.writeStartElement(ConstantsClass.SUPPLIER);
                 clsMethods = ConstantsClass.suppGetterMthds;
             }
 
@@ -211,29 +220,32 @@ public class XMLGeneratorClass implements XMLGenerator{
                     }
                     xmlStreamWriter.writeEndElement();
                 }
+
+                //to create the product related information in the xml format
                 else if (methodName.startsWith(ConstantsClass.GET_PREFIX) && methodName.equals("getProductList")){
 
-                    //getAddress details
+                    //product list details
                     Method getProductList = getMethod(obj, methodName, clz);
 
-                    //address object
+                    //list object
                     List productList = (List) getProductList.invoke(obj, new Object[0]);
 
+                    //list is looped
                     for(Object prod : productList) {
                         xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                         xmlStreamWriter.writeCharacters(ConstantsClass.nineSpace);
-                        xmlStreamWriter.writeStartElement("product");
+                        xmlStreamWriter.writeStartElement(ConstantsClass.PRODUCT);
 
-                        //array of address methods
+                        //array of product methods
                         String[] prodClsMethods = ConstantsClass.prodGetterMthds;
 
-                        //number of methods in address class
+                        //number of methods in product class
                         int prodClsMethodsCount = prodClsMethods.length;
 
                         //class array
                         Class[] prodClzArray = new Class[0];
 
-                        //looping all methods of address object
+                        //looping all methods of product object
                         for (int j = 0; j < prodClsMethodsCount; j++) {
 
                             String prodMethodName = prodClsMethods[j];
@@ -262,12 +274,12 @@ public class XMLGeneratorClass implements XMLGenerator{
                         xmlStreamWriter.writeEndElement();
                     }
                 }
-
+                //to create the address related information in the xml format
                 else if (methodName.startsWith(ConstantsClass.GET_PREFIX) && methodName.equals("getAddress")){
 
                     xmlStreamWriter.writeCharacters(System.getProperty(ConstantsClass.LINE_SEPARATOR));
                     xmlStreamWriter.writeCharacters(ConstantsClass.nineSpace);
-                    xmlStreamWriter.writeStartElement("address");
+                    xmlStreamWriter.writeStartElement(ConstantsClass.ADDRESS);
 
                     //getAddress details
                     Method getAddress = getMethod(obj, methodName, clz);
@@ -339,9 +351,13 @@ public class XMLGeneratorClass implements XMLGenerator{
     private static String getPropertyNameFromMethod(String methodName){
         String fieldName = "";
 
+        //first letter is lower cased
         fieldName = fieldName.concat(String.valueOf(methodName.charAt(3)).toLowerCase());
 
+        //converted into array of characters
         char[] methodNameArray = methodName.toCharArray();
+
+        //looped from the 5th character
         for(int i=4; i<methodNameArray.length; i++){
             char currentChar = methodNameArray[i];
             if(Character.isUpperCase(currentChar)){

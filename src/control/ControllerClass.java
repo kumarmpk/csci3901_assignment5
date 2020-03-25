@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-//Controller class controls the flow of control and acts as the layer between
+//Controller class acts as the layer between
 //user input class, database layer and xml forming class
 
 public class ControllerClass implements Controller{
@@ -46,27 +46,28 @@ public class ControllerClass implements Controller{
     public boolean validateInput(String start, String end, String outputFileName) throws Exception{
         boolean isValid = true;
         try {
-            //validates whether start date is valid string
+            //validates whether start date is a valid string
             if (!stringValidator(start)) {
                 printString("Start date is invalid.");
                 isValid = false;
                 return isValid;
             }
 
-            //validates whether end date is valid string
+            //validates whether end date is a valid string
             if (!stringValidator(end)) {
                 printString("End date is invalid.");
                 isValid = false;
                 return isValid;
             }
 
-            //validates whether output file name is valid string
+            //validates whether output file name is a valid string
             if (!stringValidator(outputFileName)) {
                 printString("output file name is invalid.");
                 isValid = false;
                 return isValid;
             }
 
+            //trimming unwanted space
             start = start.trim();
             end = end.trim();
             outputFileName = outputFileName.trim();
@@ -230,12 +231,18 @@ public class ControllerClass implements Controller{
         return isSuccess;
     }
 
-    public boolean validateXML(String fileName){
+    /*
+    validateXML method
+    gets the xml content as input
+    does the basic xml format validation
+    returns a boolean value
+     */
+    public boolean validateXML(String content){
         boolean isValid = true;
 
         try {
 
-            String content = new String(Files.readAllBytes(Paths.get(fileName)));
+            //replace the symbol
             content = content.replace("&", "&amp;");
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -244,17 +251,11 @@ public class ControllerClass implements Controller{
 
             DocumentBuilder builder = factory.newDocumentBuilder();
 
-            // the "parse" method also validates XML, will throw an exception if misformatted
+            // the parse method validates XML, will throw an exception if in invalid format
             Document document = builder.parse(new InputSource(new StringReader(content)));
 
         } catch (ParserConfigurationException e) {
-            printString("Output file is created with some missing tags.");
-            isValid = false;
-        } catch (IOException e) {
-            printString("Output file is created with some missing tags.");
-            isValid = false;
-        } catch (SAXException e) {
-            printString("Output file is created with some missing tags.");
+            printString("Output xml content faced exception while parsing for validation.");
             isValid = false;
         } catch (Exception e){
             printString("Output file is created with some missing tags.");

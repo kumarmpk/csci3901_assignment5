@@ -15,18 +15,15 @@ public class MainClass {
         //gets all the input details
         Scanner scan = new Scanner(System.in);
         System.out.println("Enter the starting date for the period to summarize:");
-        //String start = scan.next();
-        String start = "1996-07-04";
+        String start = scan.next();
 
         System.out.println("Enter the ending date for the period to summarize:");
-        //String end = scan.next();
-        String end = "1996-07-06";
+        String end = scan.next();
 
         System.out.println("enter the output file name.");
-       // String outputFileName = scan.next();
-       String outputFileName = "out.xml";
+        String outputFileName = scan.next();
 
-        //Controller class controls the flow of the program
+        //creating controller object
         Controller controller = new ControllerClass();
 
         try{
@@ -34,10 +31,10 @@ public class MainClass {
             boolean isValid = controller.validateInput(start, end, outputFileName);
 
             if(isValid){
-                //get data from database
+                //get data from database for the date range
                 Map dataMap = controller.getData(start, end);
 
-                //check data is valid
+                //check data is available
                 if(dataMap != null && !dataMap.isEmpty()){
 
                     //prepare the xml content with the data
@@ -48,7 +45,7 @@ public class MainClass {
                         boolean isSuccess = controller.writeToOutputFile(outputFileName, xmlContent);
                         if(isSuccess){
                             System.out.println("Output file created successfully.");
-                            boolean isValidXML = controller.validateXML(outputFileName);
+                            boolean isValidXML = controller.validateXML(xmlContent);
                             if(isValidXML){
                                 System.out.println("Output file is a valid xml.");
                             }
@@ -58,12 +55,13 @@ public class MainClass {
                     }
                 }
             } else{
+                //input is invalid then program ends
                 System.out.println("Input is invalid.");
             }
 
         }
         catch (Exception e){
-            //catch all exception from all methods
+            //catch all exceptions
             System.out.println("System faced unexpected exception in main method.");
         }
 

@@ -28,6 +28,18 @@ public class DBHandlerClass implements DBHandler {
         System.out.println(input);
     }
 
+    /*
+    getFieldNameFromMethod method
+    gets the method name
+    returns the field name
+    */
+    private String getFieldNameFromMethod(String methodName){
+        String fieldName = "";
+
+        fieldName = fieldName.concat(String.valueOf(methodName.charAt(3)).toLowerCase()).concat(methodName.substring(4));
+
+        return fieldName;
+    }
 
     /*
     getConnect method
@@ -115,8 +127,7 @@ public class DBHandlerClass implements DBHandler {
 
         } catch (Exception e){
             //catches all exception and throws them back
-            System.out.println("System faced exception while connecting to DB.");
-            //e.printStackTrace();
+            printString("System faced exception while connecting to DB.");
             throw e;
         } finally {
             try{
@@ -306,6 +317,7 @@ public class DBHandlerClass implements DBHandler {
             }
 
         } catch (Exception e){
+            //catches all the exceptions
             printString("System faced unexpected exception while fetching customer information.");
         }
         return returnList;
@@ -315,22 +327,9 @@ public class DBHandlerClass implements DBHandler {
     getSetterMethodForField method
     get all the method details
      */
-    private static Method getSetterMethodForField(Object obj,
+    private Method getSetterMethodForField(Object obj,
                                                  String fieldName, Class type) throws NoSuchMethodException {
         return obj.getClass().getDeclaredMethod(fieldName, type);
-    }
-
-    /*
-    getFieldNameFromMethod method
-    gets the method name
-    returns the field name
-     */
-    private String getFieldNameFromMethod(String methodName){
-        String fieldName = "";
-
-        fieldName = fieldName.concat(String.valueOf(methodName.charAt(3)).toLowerCase()).concat(methodName.substring(4));
-
-        return fieldName;
     }
 
 }
