@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<year_end_summary>
+   <year>
+      <start_date>1992-01-01</start_date>
+      <end_date>1992-01-05</end_date>
+   </year>
+   <customer_list>
+      <customer></customer>
+   </customer_list>
+   <product_list>
+      <category></category>
+   </product_list>
+   <supplier_list></supplier_list>
+</year_end_summary>

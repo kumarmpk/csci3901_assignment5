@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<year_end_summary>
+   <year>
+      <start_date>1997-02-01</start_date>
+      <end_date>1997-02-03</end_date>
+   </year>
+   <customer_list>
+      <customer>
+         <customer_name>Folk och f HB</customer_name>
+         <address>
+            <street_address>kergatan 24</street_address>
+            <city>Brcke</city>
+            <region></region>
+            <postal_code>S-844 67</postal_code>
+            <country>Sweden</country>
+         </address>
+         <num_orders>1</num_orders>
+         <order_value>360.0000</order_value>
+      </customer>
+      <customer>
+         <customer_name>Princesa Isabel Vinhos</customer_name>
+         <address>
+            <street_address>Estrada da sade n. 58</street_address>
+            <city>Lisboa</city>
+            <region></region>
+            <postal_code>1756</postal_code>
+            <country>Portugal</country>
+         </address>
+         <num_orders>1</num_orders>
+         <order_value>851.2000</order_value>
+      </customer>
+   </customer_list>
+   <product_list>
+      <category>
+         <category_name>Beverages</category_name>
+         <product>
+            <product_name>Lakkalikri</product_name>
+            <supplier_name>Karkki Oy</supplier_name>
+            <units_sold>18</units_sold>
+            <sale_value>259.2000</sale_value>
+         </product>
+      </category>
+      <category>
+         <category_name>Dairy Products</category_name>
+         <product>
+            <product_name>Queso Cabrales</product_name>
+            <supplier_name>Cooperativa de Quesos 'Las Cabras'</supplier_name>
+            <units_sold>6</units_sold>
+            <sale_value>100.8000</sale_value>
+         </product>
+      </category>
+   </product_list>
+   <supplier_list>
+      <supplier>
+         <supplier_name>Cooperativa de Quesos 'Las Cabras'</supplier_name>
+         <address>
+            <street_address>Calle del Rosal 4</street_address>
+            <city>Oviedo</city>
+            <region>Asturias</region>
+            <postal_code>33007</postal_code>
+            <country>Spain</country>
+         </address>
+         <num_products>6</num_products>
+         <product_value>100.8000</product_value>
+      </supplier>
+      <supplier>
+         <supplier_name>Karkki Oy</supplier_name>
+         <address>
+            <street_address>Valtakatu 12</street_address>
+            <city>Lappeenranta</city>
+            <region></region>
+            <postal_code>53120</postal_code>
+            <country>Finland</country>
+         </address>
+         <num_products>18</num_products>
+         <product_value>259.2000</product_value>
+      </supplier>
+      <supplier>
+         <supplier_name>Pasta Buttini s.r.l.</supplier_name>
+         <address>
+            <street_address>Via dei Gelsomini, 153</street_address>
+            <city>Salerno</city>
+            <region></region>
+            <postal_code>84100</postal_code>
+            <country>Italy</country>
+         </address>
+         <num_products>28</num_products>
+         <product_value>851.2000</product_value>
+      </supplier>
+   </supplier_list>
+</year_end_summary>
